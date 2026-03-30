@@ -113,18 +113,6 @@
         <div class="project-field-label">Project name</div>
         <div class="project-field-value large" id="pa_project_name">—</div>
       </div>
-      <div class="project-field narrow">
-        <div class="project-field-label">Owner name</div>
-        <div class="project-field-value" id="pa_owner_name">—</div>
-      </div>
-      <div class="project-field narrow">
-        <div class="project-field-label">Cell phone</div>
-        <div class="project-field-value" id="pa_phone">—</div>
-      </div>
-      <div class="project-field narrow">
-        <div class="project-field-label">Email address</div>
-        <div class="project-field-value" id="pa_email">—</div>
-      </div>
     </div>
   </div>
 
@@ -308,21 +296,42 @@ function handleSubmit(){var invalid=[];document.querySelectorAll('input[required
 <script>
 (function() {
   var params = new URLSearchParams(window.location.search);
-  function setField(id, key, fallback) {
-    var el = document.getElementById(id);
-    if (!el) return;
+
+  function decode(key) {
     var val = params.get(key);
-    if (val && val.trim()) {
-      el.textContent = decodeURIComponent(val.trim());
-      el.classList.remove('placeholder');
-    } else {
-      el.textContent = fallback || '—';
-    }
+    return val ? decodeURIComponent(val.trim()) : '';
   }
-  setField('pa_project_name', 'project_name');
-  setField('pa_owner_name',   'owner_name');
-  setField('pa_phone',        'owner_phone');
-  setField('pa_email',        'owner_email');
+
+  // ── Read all parameters individually ──────────────────────────
+  var projectName = decode('project_name');
+  var firstName   = decode('owner_first');
+  var lastName    = decode('owner_last');
+  var ownerPhone  = decode('owner_phone');
+  var ownerEmail  = decode('owner_email');
+
+  // ── Banner: project name only ──────────────────────────────────
+  var bannerEl = document.getElementById('pa_project_name');
+  if (bannerEl) bannerEl.textContent = projectName || '—';
+
+  // ── Pre-fill Section 1 form fields ────────────────────────────
+  function fillInput(id, val) {
+    var el = document.getElementById(id);
+    if (!el || !val) return;
+    el.value = val;
+    el.style.borderColor = 'rgba(0,45,98,0.35)';
+    el.style.background  = 'rgba(0,45,98,0.04)';
+    el.readOnly = true;
+    el.title = 'Pre-filled from project record';
+  }
+
+  fillInput('s1_first', firstName);
+  fillInput('s1_last',  lastName);
+  fillInput('s1_phone', ownerPhone);
+  fillInput('s1_email', ownerEmail);
+
+  // Update progress bar after pre-fill
+  if (typeof updateProg === 'function') updateProg();
+
 })();
 </script>
 
