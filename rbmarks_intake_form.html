@@ -287,7 +287,122 @@ function handleSame(p,val){var banner=document.getElementById(p+'_banner'),field
 var allInputs=document.querySelectorAll('input:not([type=radio]),select,textarea');
 function updateProg(){var t=0,f=0;allInputs.forEach(function(el){t++;if(el.value&&el.value.trim())f++;});document.getElementById('prog').style.width=Math.round((f/t)*100)+'%';}
 allInputs.forEach(function(el){el.addEventListener('input',updateProg);el.addEventListener('change',updateProg);});
-function handleSubmit(){var invalid=[];document.querySelectorAll('input[required]:not([type=radio]),select[required],textarea[required]').forEach(function(el){if(!el.value||!el.value.trim()){el.style.borderColor='#ee3124';invalid.push(el);}else{el.style.borderColor='';}});['owner_same','rep_same','noc_same','pay_same'].forEach(function(n){var checked=document.querySelector('input[name="'+n+'"]:checked');document.querySelectorAll('input[name="'+n+'"]').forEach(function(b){b.closest('.radio-group').style.outline=checked?'':'1px solid #ee3124';});});if(invalid.length>0){invalid[0].scrollIntoView({behavior:'smooth',block:'center'});return;}document.querySelectorAll('.form-body .section,.submit-area').forEach(function(s){s.style.display='none';});document.getElementById('successMsg').style.display='block';document.getElementById('prog').style.width='100%';}
+function getVal(id){var el=document.getElementById(id);return el?el.value:'';}
+
+function handleSubmit(){
+  var invalid=[];
+  document.querySelectorAll('input[required]:not([type=radio]),select[required],textarea[required]').forEach(function(el){
+    if(!el.readOnly&&(!el.value||!el.value.trim())){el.style.borderColor='#ee3124';invalid.push(el);}
+    else{el.style.borderColor='';}
+  });
+  ['owner_same','rep_same','noc_same','pay_same'].forEach(function(n){
+    var checked=document.querySelector('input[name="'+n+'"]:checked');
+    document.querySelectorAll('input[name="'+n+'"]').forEach(function(b){
+      b.closest('.radio-group').style.outline=checked?'':'1px solid #ee3124';
+    });
+  });
+  if(invalid.length>0){invalid[0].scrollIntoView({behavior:'smooth',block:'center'});return;}
+
+  var params=new URLSearchParams(window.location.search);
+  function decode(k){var v=params.get(k);return v?decodeURIComponent(v.trim()):''}
+
+  var itemId=decode('item_id');
+
+  var data={
+    Client_x0020_First_x0020_Name:        getVal('s1_first'),
+    Client_x0020_Last_x0020_Name:         getVal('s1_last'),
+    Client_x0020_Email:                   getVal('s1_email'),
+    Client_x0020_Phone:                   getVal('s1_phone'),
+    Company_x0020_Name:                   getVal('s2_company'),
+    Business_x0020_Type:                  getVal('s2_biztype'),
+    Billing_x0020_Address:                getVal('s3_addr1')+(getVal('s3_addr2')?' '+getVal('s3_addr2'):''),
+    Billing_x0020_City:                   getVal('s3_city'),
+    Billing_x0020_State:                  getVal('s3_state'),
+    Billing_x0020_ZIP:                    getVal('s3_zip'),
+    Owner_x0020_First_x0020_Name:         getVal('s4_first')||decode('owner_first'),
+    Owner_x0020_Last_x0020_Name:          getVal('s4_last')||decode('owner_last'),
+    Owner_x0020_Email:                    getVal('s4_email')||decode('owner_email'),
+    Owner_x0020_Phone:                    getVal('s4_phone')||decode('owner_phone'),
+    Owner_x0020_Company:                  getVal('s4_company'),
+    Owner_x0020_Business_x0020_Type:      getVal('s4_biztype'),
+    Owner_x0020_Address:                  getVal('s4_addr1')+(getVal('s4_addr2')?' '+getVal('s4_addr2'):''),
+    Owner_x0020_City:                     getVal('s4_city'),
+    Owner_x0020_State:                    getVal('s4_state'),
+    Owner_x0020_ZIP:                      getVal('s4_zip'),
+    Rep_x0020_First_x0020_Name:           getVal('s5_first'),
+    Rep_x0020_Last_x0020_Name:            getVal('s5_last'),
+    Rep_x0020_Email:                      getVal('s5_email'),
+    Rep_x0020_Phone:                      getVal('s5_phone'),
+    Rep_x0020_Company:                    getVal('s5_company'),
+    Rep_x0020_Address:                    getVal('s5_addr1')+(getVal('s5_addr2')?' '+getVal('s5_addr2'):''),
+    Rep_x0020_City:                       getVal('s5_city'),
+    Rep_x0020_State:                      getVal('s5_state'),
+    Rep_x0020_ZIP:                        getVal('s5_zip'),
+    NOC_x0020_First_x0020_Name:           getVal('s6_first'),
+    NOC_x0020_Last_x0020_Name:            getVal('s6_last'),
+    NOC_x0020_Email:                      getVal('s6_email'),
+    NOC_x0020_Phone:                      getVal('s6_phone'),
+    NOC_x0020_Company:                    getVal('s6_company'),
+    NOC_x0020_Address:                    getVal('s6_addr1')+(getVal('s6_addr2')?' '+getVal('s6_addr2'):''),
+    NOC_x0020_City:                       getVal('s6_city'),
+    NOC_x0020_State:                      getVal('s6_state'),
+    NOC_x0020_ZIP:                        getVal('s6_zip'),
+    Pay_x0020_App_x0020_First_x0020_Name: getVal('s7_first'),
+    Pay_x0020_App_x0020_Last_x0020_Name:  getVal('s7_last'),
+    Pay_x0020_App_x0020_Email:            getVal('s7_email'),
+    Pay_x0020_App_x0020_Phone:            getVal('s7_phone'),
+    Pay_x0020_App_x0020_Company:          getVal('s7_company'),
+    Pay_x0020_App_x0020_Address:          getVal('s7_addr1')+(getVal('s7_addr2')?' '+getVal('s7_addr2'):''),
+    Pay_x0020_App_x0020_City:             getVal('s7_city'),
+    Pay_x0020_App_x0020_State:            getVal('s7_state'),
+    Pay_x0020_App_x0020_ZIP:              getVal('s7_zip'),
+    Pay_x0020_App_x0020_Procedures:       document.querySelector('[name="pay_procedures"]')?document.querySelector('[name="pay_procedures"]').value:''
+  };
+
+  var btn=document.querySelector('.submit-btn');
+  btn.textContent='Submitting…';
+  btn.disabled=true;
+
+  var siteUrl='https://rbmarksinc.sharepoint.com';
+  var listName='RBM Client Intake';
+
+  fetch(siteUrl+'/_api/contextinfo',{
+    method:'POST',
+    headers:{'Accept':'application/json;odata=verbose'},
+    credentials:'include'
+  })
+  .then(function(r){return r.json();})
+  .then(function(ctx){
+    var digest=ctx.d.GetContextWebInformation.FormDigestValue;
+    var endpoint=siteUrl+"/_api/web/lists/getbytitle('"+listName+"')/items("+itemId+")";
+    return fetch(endpoint,{
+      method:'POST',
+      headers:{
+        'Accept':'application/json;odata=verbose',
+        'Content-Type':'application/json;odata=verbose',
+        'X-RequestDigest':digest,
+        'X-HTTP-Method':'MERGE',
+        'IF-MATCH':'*'
+      },
+      credentials:'include',
+      body:JSON.stringify({__metadata:{type:'SP.Data.RBM_x0020_Client_x0020_IntakeListItem'},...data})
+    });
+  })
+  .then(function(r){
+    if(r.ok||r.status===204){
+      document.querySelectorAll('.form-body .section,.submit-area').forEach(function(s){s.style.display='none';});
+      document.getElementById('successMsg').style.display='block';
+      document.getElementById('prog').style.width='100%';
+    } else {
+      return r.json().then(function(e){throw new Error(e.error?e.error.message.value:'Submission failed');});
+    }
+  })
+  .catch(function(err){
+    btn.textContent='Submit form';
+    btn.disabled=false;
+    alert('There was a problem submitting the form. Please try again or contact RBmarks Construction directly.\n\nError: '+err.message);
+  });
+}
 </script>
 
 </div>
